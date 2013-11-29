@@ -1,7 +1,7 @@
 /*!
  * jQuery face Recognition Plugin v1.0.0
  *
- * Copyright 2013 facecord
+ * Copyright 2013 facecore
  * Released under the GPL license
  */
 (function ($) {
