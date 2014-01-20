@@ -1,8 +1,9 @@
-/*!
+/*
  * jQuery face Recognition Plugin v1.0.0
- *
- * Copyright 2013 facecore
- * Released under the GPL license
+ * 
+ * Copyright 2013 facecore.cn
+ * Released under the LGPL license
+ * author wangya
  */
 (function ($) {
 
@@ -14,13 +15,12 @@
 
     //默认选项
     $.fn.faceRecognition.defaults = {
-        hello: 'Welcome use face recognition API.',
+        
+        //人脸识别接口主机
+        server: 'http://api.facecore.cn',
 
-        //人脸识别正式环境接口
-        server: 'http://v1.facecore',
-
-        //阈值
-        threshold: 0.6,
+        //自定义默认阈值
+        threshold: 0.875,
 
         //人脸比对
         faceCompare: '/api/facecompare/',
@@ -29,13 +29,19 @@
         faceDetectCount: '/api/facedetectcount/',
 
         //获取人脸特征
-        faceDetect: '/api/facedetect/'
+        faceDetect: '/api/facedetect/',
+        
+        //server hello
+        hello: '/api/hello/',
+        
+        //授权应用appkey，默认演示key.
+        appkey:'8c1be718fa976083a6940009f36c056e'
     };
 
     //获取人脸相似度
-    $.fn.faceRecognition.faceCompare = function (originFace, targetFace, param, callback) {
+    $.fn.faceRecognition.faceCompare = function (originFace, targetFace, param, callback, errorCallback) {
         $.ajax({
-            url: this.defaults.server + this.defaults.faceCompare,
+            url: this.defaults.server + this.defaults.faceCompare + '?appkey=' + this.defaults.appkey,
             crossDomain: true,
             cache: false,
             type: 'post',
@@ -44,14 +50,17 @@
             data: { face1: originFace, face2: targetFace },
             success: function (data, textStatus) {
                 (callback && typeof (callback) === "function") && callback(param, data, textStatus);
+            },
+            error: function (textStatus) {
+                (errorCallback && typeof (errorCallback) === "function") && errorCallback(textStatus);
             }
         });
     };
 
     //获取人脸数
-    $.fn.faceRecognition.faceDetectCount = function (imageBase64, callback) {
+    $.fn.faceRecognition.faceDetectCount = function (imageBase64, callback, errorCallback) {
         $.ajax({
-            url: this.defaults.server + this.defaults.faceDetectCount,
+            url: this.defaults.server + this.defaults.faceDetectCount + '?appkey=' + this.defaults.appkey,
             crossDomain: true,
             cache: false,
             type: 'post',
@@ -60,14 +69,17 @@
             data: { faceImage: imageBase64 },
             success: function (data, textStatus) {
                 (callback && typeof (callback) === "function") && callback(data, textStatus);
+            },
+            error: function (textStatus) {
+                (errorCallback && typeof (errorCallback) === "function") && errorCallback(textStatus);
             }
         });
     };
 
     //获取人脸特征
-    $.fn.faceRecognition.faceDetect = function (imageBase64, callback) {
+    $.fn.faceRecognition.faceDetect = function (imageBase64, callback, errorCallback) {
         $.ajax({
-            url: this.defaults.server + this.defaults.faceDetect,
+            url: this.defaults.server + this.defaults.faceDetect + '?appkey=' + this.defaults.appkey,
             crossDomain: true,
             cache: false,
             type: 'post',
@@ -76,13 +88,28 @@
             data: { faceImage: imageBase64 },
             success: function (data, textStatus) {
                 (callback && typeof (callback) === "function") && callback(data, textStatus);
+            },
+            error: function (textStatus) {
+                (errorCallback && typeof (errorCallback) === "function") && errorCallback(textStatus);
             }
         });
     };
 
-    //hello
-    $.fn.faceRecognition.test = function (callback) {
-        (callback && typeof (callback) === "function") && callback(this.defaults.hello);
+    //服务器hello接口
+    $.fn.faceRecognition.hello = function(callback, errorCallback) {
+        $.ajax({
+            url: this.defaults.server + this.defaults.hello + '?appkey=' + this.defaults.appkey,
+            crossDomain: true,
+            cache: false,
+            type: 'post',
+            async: true,
+            success: function(data, textStatus) {
+                (callback && typeof(callback) === "function") && callback(data, textStatus);
+            },
+            error: function (textStatus) {
+                (errorCallback && typeof (errorCallback) === "function") && errorCallback(textStatus);
+            }
+        });
     };
-
+    
 })(jQuery);
